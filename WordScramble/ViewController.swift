@@ -16,6 +16,9 @@ class ViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
+        
+        
         if let startWordsPath = Bundle.main.path(forResource: "start", ofType: "txt") {
             if let startWords = try? String(contentsOfFile: startWordsPath) {
               allWords = startWords.components(separatedBy: "\n")
@@ -43,11 +46,30 @@ class ViewController: UITableViewController {
         return cell
     }
     
+    func promptForAnswer() {
+        let ac = UIAlertController(title: "Enter answer", message: nil, preferredStyle: .alert)
+        ac.addTextField()
+        
+        let submitAction = UIAlertAction(title: "Submit", style: .default) {
+            // [unowned self, ac] (action: UIAlertAction!) in -- action is the parameter required for the closure
+            // [unowned self, ac] action in -- simplified because swift knows the type
+            [unowned self, ac] _ in // simplifed because we don't use the parameter so it doesn't need a name
+            let answer = ac.textFields![0]
+            self.submit(answer: answer.text!)
+        }
+        ac.addAction(submitAction)
+        present(ac, animated: true)
+    }
+    
     func startGame() {
         allWords = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: allWords) as! [String]
         title = allWords[0]
         usedWords.removeAll(keepingCapacity: true)
         tableView.reloadData()
+    }
+    
+    func submit(answer: String) {
+        
     }
 
 
