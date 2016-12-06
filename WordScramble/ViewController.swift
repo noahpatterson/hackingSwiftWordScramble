@@ -25,9 +25,11 @@ class ViewController: UITableViewController {
         if let startWordsPath = Bundle.main.path(forResource: "start", ofType: "txt") {
             if let startWords = try? String(contentsOfFile: startWordsPath) {
               allWords = startWords.components(separatedBy: "\n")
+            } else {
+                loadDefaultWords()
             }
         } else {
-            allWords = ["silkworm"]
+            loadDefaultWords()
         }
         
         startGame()
@@ -116,7 +118,7 @@ class ViewController: UITableViewController {
     }
 
     func isOriginal(word: String) -> Bool {
-        return usedWords.contains(word) ? false : true
+        return word == allWords[wordShownCount] || usedWords.contains(word) ? false : true
     }
     
     func isReal(word: String) -> Bool {
@@ -130,6 +132,10 @@ class ViewController: UITableViewController {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         present(ac, animated: true)
+    }
+    
+    func loadDefaultWords(){
+        allWords = ["silkworm"]
     }
 }
 
