@@ -69,9 +69,36 @@ class ViewController: UITableViewController {
     }
     
     func submit(answer: String) {
-        
+        let lowerCasedAnswer = answer.lowercased()
+        if (isOriginal(word: lowerCasedAnswer) && isPossible(word: lowerCasedAnswer) && isReal(word: lowerCasedAnswer)) {
+            usedWords.insert(answer, at: 0)
+            let indexPath = IndexPath(row: 0, section: 0)
+            tableView.insertRows(at: [indexPath], with: .automatic)
+        }
+    }
+    
+    func isPossible(word: String) -> Bool {
+        var tempWord = title!.lowercased()
+
+        for letter in word.characters {
+            if let pos = tempWord.range(of: String(letter)) {
+                tempWord.remove(at: pos.lowerBound)
+            } else {
+                return false
+            }
+        }
+        return true
     }
 
-
+    func isOriginal(word: String) -> Bool {
+        return usedWords.contains(word) ? false : true
+    }
+    
+    func isReal(word: String) -> Bool {
+        let checker = UITextChecker()
+        let range = NSMakeRange(0, word.utf16.count)
+        let missspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
+        return missspelledRange.location == NSNotFound
+    }
 }
 
