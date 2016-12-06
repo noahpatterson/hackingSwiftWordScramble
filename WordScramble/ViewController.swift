@@ -13,10 +13,13 @@ class ViewController: UITableViewController {
     
     var allWords  = [String]()
     var usedWords = [String]()
+    var wordShownCount = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(resetWord))
         
         
         if let startWordsPath = Bundle.main.path(forResource: "start", ofType: "txt") {
@@ -59,6 +62,12 @@ class ViewController: UITableViewController {
         }
         ac.addAction(submitAction)
         present(ac, animated: true)
+    }
+    
+    func resetWord() {
+        usedWords.removeAll(keepingCapacity: true)
+        title = allWords[wordShownCount+1]
+        wordShownCount += 1
     }
     
     func startGame() {
